@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.reactivex.Observable;
 
@@ -30,9 +31,13 @@ public class MainActivity extends AppCompatActivity {
             int dan= Integer.parseInt(guguEdit.getText().toString());
             guguResult.setText("");
             Observable.range(1,9)
-                    .map(row->dan+" * "+row+" = "+(dan*row))
+                    .map(row-> {
+                        if (dan < 2 || dan > 9) throw new NumberFormatException("");
+                        if (row==1) guguResult.setText("");
+                        return dan + " * " + row + " = " + (dan * row);
+                    })
                     .map(row->row+"\n")
-                    .subscribe(guguResult::append);
+                    .subscribe(guguResult::append,e-> Toast.makeText(getApplicationContext(),"구구단은 2 에서 9 사이의 숫자를 입력해주셔야 합니다.",Toast.LENGTH_SHORT).show());
         });
     }
 
