@@ -1,9 +1,15 @@
 package com.example.rxjavastudy;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.TextViewCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import io.reactivex.Observable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,10 +22,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView tv=(TextView)findViewById(R.id.hello_text);
-        io.reactivex.Observable.just(tv.getText().toString()) //input
-                .map(s->s+" Rx!") //operator
-                .subscribe(text->tv.setText(text)); //output
+        EditText guguEdit=(EditText)findViewById(R.id.guguEdit);
+        EditText guguResult=(EditText)findViewById(R.id.guguResult);
+        Button btnPrint=(Button)findViewById(R.id.btnPrint);
 
+        btnPrint.setOnClickListener(view -> {
+            int dan= Integer.parseInt(guguEdit.getText().toString());
+            guguResult.setText("");
+            Observable.range(1,9)
+                    .map(row->dan+" * "+row+" = "+(dan*row))
+                    .map(row->row+"\n")
+                    .subscribe(guguResult::append);
+        });
     }
+
+
 }
