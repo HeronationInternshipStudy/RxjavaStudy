@@ -28,14 +28,14 @@ public class MainActivity extends AppCompatActivity {
         Button btnPrint=(Button)findViewById(R.id.btnPrint);
 
         btnPrint.setOnClickListener(view -> {
-            int dan= Integer.parseInt(guguEdit.getText().toString());
             guguResult.setText("");
-            Observable.range(1,9)
-                    .map(row-> {
-                        if (dan < 2 || dan > 9) throw new NumberFormatException("");
-                        if (row==1) guguResult.setText("");
-                        return dan + " * " + row + " = " + (dan * row);
-                    })
+            Observable.just(guguEdit.getText().toString())
+                    .map(dan->Integer.parseInt(dan))
+                    .filter(dan-> 1<dan && dan<10 )
+                    .flatMap(dan->Observable.range(1,9),(dan,row)->dan+" * "+row+" = "+ (dan*row))
+                    /*flatMap()은 값을 또 다른 Observable로 변환해주는 Operator. 연속적으로 매핑
+                    * 1, 2, 3, 4, 5, 6, 7, 8, 9 값을 먼저 뻥튀기 한 후에,
+                    * dan과 row를 연속적으로 매핑해줌 */
                     .map(row->row+"\n")
                     .subscribe(guguResult::append,e-> Toast.makeText(getApplicationContext(),"구구단은 2 에서 9 사이의 숫자를 입력해주셔야 합니다.",Toast.LENGTH_SHORT).show());
         });
